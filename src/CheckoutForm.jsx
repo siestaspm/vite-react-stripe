@@ -53,7 +53,7 @@
 import {
   PaymentElement,
   useStripe,
-  useElements
+  useElements,
 } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 
@@ -89,9 +89,13 @@ export default function CheckoutForm() {
 
     paymentRequest.on("paymentmethod", async (ev) => {
       const { error: confirmError, paymentIntent } =
-        await stripe.confirmCardPayment(ev.clientSecret, {
-          payment_method: ev.paymentMethod.id,
-        }, { handleActions: false });
+        await stripe.confirmCardPayment(
+          ev.clientSecret,
+          {
+            payment_method: ev.paymentMethod.id,
+          },
+          { handleActions: false }
+        );
 
       if (confirmError) {
         ev.complete("fail");
@@ -128,14 +132,26 @@ export default function CheckoutForm() {
       )}
 
       <PaymentElement />
-      <button
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={!stripe}
+          style={{
+            opacity: !stripe ? 0.6 : 1,
+          }}
+          className="w-full md:max-w-72 bg-[#ff7a00] text-white font-semibold mt-4 py-2 px-4 rounded-lg shadow-[1px_1px_4px_rgba(0,0,0,0.3)] border-b-2 border-r-2 border-orange-600 hover:border-orange-8 00 transition-300 cursor-pointer hover:bg-orange-600 transition-colors duration-300"
+        >
+          Pay
+        </button>
+      </div>
+
+      {/* <button
         type="submit"
         disabled={!stripe}
         style={{ marginTop: "20px" }}
       >
         Pay
-      </button>
+      </button> */}
     </form>
   );
 }
-
